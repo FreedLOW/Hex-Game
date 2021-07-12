@@ -75,7 +75,7 @@ public class HexController : MonoBehaviour
             hexPrice.SetActive(false);
             getIncome.gameObject.SetActive(true);
         }
-        else print("Not enough money bich!");
+        else print("Not enough money!");
     }
 
     private void OnDrawGizmos()
