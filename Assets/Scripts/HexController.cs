@@ -9,16 +9,17 @@ public class HexController : MonoBehaviour
     [SerializeField] Sprite[] hexSprites;
     private SpriteRenderer hexSpriteRenderer;
 
-    [SerializeField] Transform player;
+    Transform player;
 
     [SerializeField] GameObject hexCanvas;
     [SerializeField] GameObject hexPrice;
     [SerializeField] GameObject hexObject;
     [SerializeField] Text priceHex;
+    [SerializeField] Text getIncome;
 
     [SerializeField] LayerMask hexMask;
 
-    float maxDistance = 1f;
+    float maxDistance = .5f;
 
     public int RandomHex { get => randomHex; private set => randomHex = value; }
 
@@ -32,6 +33,10 @@ public class HexController : MonoBehaviour
 
         hexSpriteRenderer = hexObject.GetComponent<SpriteRenderer>();
         hexSpriteRenderer.sprite = hexSprites[Random.Range(0, hexSprites.Length)];  //рандомно меняю спрайт и гекса
+
+        CheckPlayer();
+
+        getIncome.text = hex[RandomHex].Income.ToString();
     }
 
     private void Update()
@@ -42,10 +47,22 @@ public class HexController : MonoBehaviour
     void CheckOtherHex() //поиск коллизий с другими гексами
     {
         bool hit = Physics2D.BoxCast(transform.position, transform.lossyScale, 0f, Vector2.one, maxDistance, hexMask);
-        if (hit)
+        if (hit && hexCanvas != null)
         {
             hexCanvas.SetActive(true);
             priceHex.text = hex[RandomHex].Price.ToString();
+        }
+        else return;
+    }
+
+    void CheckPlayer()
+    {
+        BoxCollider2D box = gameObject.GetComponent<BoxCollider2D>();
+        var col = box.OverlapPoint(player.position);
+        if (col)
+        {
+            hexObject.SetActive(true);
+            Destroy(hexCanvas);
         }
     }
 
@@ -56,6 +73,7 @@ public class HexController : MonoBehaviour
             GameController.Instance.playerMoney -= hex[RandomHex].Price;
             hexObject.SetActive(true);
             hexPrice.SetActive(false);
+            getIncome.gameObject.SetActive(true);
         }
         else print("Not enough money bich!");
     }

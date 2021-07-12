@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Hex
 {
@@ -21,14 +19,52 @@ public class Hex
 
     public Vector3 Position()  //возвращает позицию в мировых координатах гекса
     {
-        float radius = 1f;
-        float height = radius;
-        float width =  Width_Multiplier * height;
-
-        float horizontalSpace = width;
-        float verticalSpace = height * .65f;
-
-        return new Vector3(horizontalSpace * (this.X + this.Y / 2f), verticalSpace * this.Y, 0);
+        return new Vector3(HorizontalSpacing() * (this.X + this.Y / 2f), VerticalSpacing() * this.Y, 0);
         //return new Vector3(horizontalSpace * (this.X + this.Y / 2f), verticalSpace * this.Y, 0);
+    }
+
+    float HexHeight()
+    {
+        return 1f;
+    }
+
+    float HexWidth()
+    {
+        return Width_Multiplier * HexHeight();
+    }
+
+    float HorizontalSpacing()
+    {
+        return HexWidth();
+    }
+
+    float VerticalSpacing()
+    {
+        return HexHeight() * .65f;
+    }
+
+    public Vector3 PositionFromCamera(Vector3 cameraPosition, float numberRows, float numberColums)  //возвращает позицию гекста от камеры
+    {
+        float mapHeight = numberRows * VerticalSpacing();
+        float mapWidth = numberColums * HorizontalSpacing();
+
+        Vector3 position = Position();
+
+        float widthFromCamera = (position.x - cameraPosition.x) / mapWidth;
+
+        if (Mathf.Abs(widthFromCamera) <= 0.5f)
+        {
+            return position;
+        }
+
+        if (widthFromCamera > 0)
+            widthFromCamera += .5f;
+        else widthFromCamera -= .5f;
+
+        int widthToFix = (int)widthFromCamera;
+
+        position.x -= widthToFix * mapWidth;
+
+        return position;
     }
 }

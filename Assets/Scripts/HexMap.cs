@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class HexMap : MonoBehaviour
 {
@@ -25,7 +23,7 @@ public class HexMap : MonoBehaviour
                 Hex hex = new Hex(x, y);
 
                 //Instantiate(hexPrefab[x], new Vector3(x, y), Quaternion.identity, transform);
-                var newHex = Instantiate(hexPrefab, hex.Position(), Quaternion.identity, transform);
+                var newHex = Instantiate(hexPrefab, hex.PositionFromCamera(Camera.main.transform.position, numberRows, numberColums), Quaternion.identity, transform);
             }
         }
 
